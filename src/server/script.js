@@ -24,7 +24,7 @@ rl.on('line', (input) => {
   const song = JSON.stringify(createSong(split));
   var args = `-X POST -H 'Content-Type: application/json' -d '${song}' http://0.0.0.0:3004/api/v1/musics`;
 
-  exec('curl ' + args, function (error, stdout, stderr) {
+  exec('curl ' + args, 'utf-8', function (error, stdout, stderr) {
     if (error) {
       console.log('exec error: ' + error);
     }

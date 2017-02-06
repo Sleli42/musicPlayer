@@ -4,14 +4,14 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import initApi from './api/init';
 
-const loadSongs = (song) => (req, res, next) => {
-  res.json(song.load());
-}
-
-const addSong = (song) => (req, res, next) => {
-  console.log('heree');
-  res.json(song.add(req.body));
-}
+// const loadSongs = (song) => (req, res, next) => {
+//   res.json(song.load());
+// }
+//
+// const addSong = (song) => (req, res, next) => {
+//   console.log('heree');
+//   res.json(song.add(req.body));
+// }
 
 const initApp = (config, models) => {
   const { publicPath, buildPath, server } = config;
@@ -23,11 +23,14 @@ const initApp = (config, models) => {
   app.use(bodyParser.json());
   app.use('/ping', (req, res) => res.json({ ping: 'pong' }));
   app.get('/api/v1/musics', (req, res, next) => {
-    // console.log('[GET] here');
+    // /api/v1/musics?recent=5
+    if (req.query.recent) {
+      // console.log('here query recent');
+      res.json(models.song.filterByYear());
+    }
     res.json(models.song.load());
   });
   app.post('/api/v1/musics', (req, res, next) => {
-    // console.log('[POST] here');
     res.json(models.song.add(req.body));
   });
 
