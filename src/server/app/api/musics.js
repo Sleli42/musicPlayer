@@ -3,9 +3,9 @@ import express from 'express';
 const loadSongs = song => (req, res) => {
   if (req.query.topPlayed) {
     res.json(song.filterByTopPlayed(req.query.topPlayed));
-  } else if (req.query.top) {
+  } if (req.query.top) {
     res.json(song.filterByTop(req.query.top));
-  } else if (req.query.recent) {
+  } if (req.query.recent) {
     res.json(song.filterByMostRecent(req.query.recent));
   } else {
     res.json(song.load());

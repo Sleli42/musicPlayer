@@ -29,12 +29,13 @@ class Song {
 
     const playSong = (list) => {
       const randomSong = this.getRandomSong(list);
+      if (!randomSong) return;
       randomSong.playCount += 1;
       console.log(`Playing song: ${randomSong.title}`);
       this.idTimeout = setTimeout(() => {
         if (!list.length) return;
         playSong(list.filter(song => song.id !== randomSong.id));
-      }, randomSong.time * 1000);
+      }, randomSong.time * 100);
     };
     playSong(playlist);
   }
@@ -56,14 +57,14 @@ class Song {
   filterByTop(sortCount) {
     if (!sortCount) return;
     const playlist = [...this.load()];
-    const sort = R.compose(R.take(sortCount), R.sort(R.descend(R.prop('rating'))));
+    const sort = R.compose(R.take(sortCount), R.reverse, R.sortBy(R.prop('rating')));
     return sort(playlist);
   }
 
   filterByTopPlayed(sortCount) {
     if (!sortCount) return;
     const playlist = [...this.load()];
-    const sort = R.compose(R.take(sortCount), R.sort(R.descend(R.prop('playCount'))));
+    const sort = R.compose(R.take(sortCount), R.reverse, R.sortBy(R.prop('playCount')));
     return sort(playlist);
   }
 }
