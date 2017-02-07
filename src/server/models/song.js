@@ -1,12 +1,9 @@
-import dateFns from 'date-fns';
 import R from 'ramda';
 
 class Song {
   id = 0;
   playlist = [];
   songs = [];
-
-
 
   load() {
     return this.songs;
@@ -16,7 +13,7 @@ class Song {
     const newSong = {
       ...song,
       id: this.id += 1,
-      dateAdded: new Date().toISOString().slice(0, 19),
+      dateAdded: new Date(),
       playCount: 0,
     };
     this.songs.push(newSong);
@@ -28,10 +25,9 @@ class Song {
   }
 
   play() {
-    console.log('STart playing music');
     const playlist = [...this.load()];
 
-    const playSong = list => {
+    const playSong = (list) => {
       const randomSong = this.getRandomSong(list);
       randomSong.playCount += 1;
       console.log(`Playing song: ${randomSong.title}`);
@@ -39,18 +35,33 @@ class Song {
         if (!list.length) return;
         playSong(list.filter(song => song.id !== randomSong.id));
       }, randomSong.time * 1000);
-    }
+    };
     playSong(playlist);
   }
 
   stop() {
     if (this.idTimeout) {
-      console.log('Stop playing music');
       clearTimeout(this.idTimeout);
     }
   }
 
+  filterByMostRecent(sortCount) {
+    const diff = (a, b) => a.dateAdded.getTime() - b.dateAdded.getTime();
+    if (!sortCount) return;
+    const playlist = [...this.load()];
+    const sort = R.compose(R.take(sortCount), R.sort(diff));
+    return sort(playlist);
+  }
+
+  filterByTop(sortCount) {
+    if (!sortCount) return;
+    const playlist = [...this.load()];
+    const sort = R.compose(R.take(sortCount), R.sort(R.descend(R.prop('rating'))));
+    return sort(playlist);
+  }
+
   filterByTopPlayed(sortCount) {
+    if (!sortCount) return;
     const playlist = [...this.load()];
     const sort = R.compose(R.take(sortCount), R.sort(R.descend(R.prop('playCount'))));
     return sort(playlist);

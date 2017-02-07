@@ -1,9 +1,9 @@
 import express from 'express';
 import initMusics from './musics';
 
-const init = (ctx) => {
+const init = (ctx, models) => {
   const app = express();
-  app.use('/v1', initMusics(ctx));
+  app.use('/musics', initMusics(ctx, models));
   return app;
 };
 
